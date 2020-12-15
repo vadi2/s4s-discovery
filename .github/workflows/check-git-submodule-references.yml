@@ -1,0 +1,9 @@
+name: Check integrity of git submodule references
+on: push
+jobs:
+  checkout-submodules:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: true

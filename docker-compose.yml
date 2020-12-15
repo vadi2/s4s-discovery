@@ -1,0 +1,68 @@
+version: "3.8"
+services:
+  web:
+    build: ./discovery-web-ui
+    working_dir: /discovery-web-ui
+    entrypoint: ["./run.sh"]
+    environment:
+      - DATA_HOST=localhost:8081
+    ports:
+      - "3000:3000"
+    depends_on:
+      - procure-wip
+      - data-server
+    volumes:
+      - "./discovery-web-ui/src:/discovery-web-ui/src"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000"]
+  procure-wip:
+    build: ./procure-wip
+    working_dir: /procure-wip
+    entrypoint: [ "./run.sh" ]
+    stdin_open: true
+    # ^without this: exit with code 0 ?
+    environment:
+      - PORT=4000
+      - BROWSER=none
+      # ^ BROWSER=none -- otherwise, npm start (react-scripts start) will attempt to launch a browser
+      - DATA_HOST=localhost:8081
+    ports:
+      - "4000:4000"
+    depends_on:
+      - data-server
+      # depends on fhir-server, b/c of public/config/config-override-dev.json, which encodes reference to http://localhost:8081/data/manifest
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4000"]
+  data-server:
+    build: ./discovery-data-server
+    working_dir: /discovery-data-server
+    entrypoint: ["./run.sh"]
+    environment:
+      - PORT=8081
+      - DSTU2_HOST=fhir-data-dstu2:9002
+      - DSTU3_HOST=fhir-data-dstu3:9007
+      - DATA_SERVER_HOST=localhost:8081
+      - UI_HOST=localhost:3000
+    ports:
+      - "8081:8081"
+    depends_on:
+      - fhir-data-dstu2
+      - fhir-data-dstu3
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8081/data/manifest"]
+  fhir-data-dstu2:
+    build: ./discovery-fhir-data
+    working_dir: /discovery-fhir-data/DSTU2
+    entrypoint: ["./run"]
+    ports:
+      - "9002:9002"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9002"] # any path is 200? -- otherwise: /smart-1032702-Shaw.json
+  fhir-data-dstu3:
+    build: ./discovery-fhir-data
+    working_dir: /discovery-fhir-data/DSTU3
+    entrypoint: [ "./run" ]
+    ports:
+      - "9007:9007"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9007"] # any path is 200? -- otherwise: /1396-Ledner.json

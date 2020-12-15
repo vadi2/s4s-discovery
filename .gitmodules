@@ -1,0 +1,12 @@
+[submodule "discovery-web-ui"]
+	path = discovery-web-ui
+	url = git@github.com:sync-for-science/discovery-web-ui.git
+[submodule "procure-wip"]
+	path = procure-wip
+	url = git@github.com:Vermonster/procure-wip.git
+[submodule "discovery-data-server"]
+	path = discovery-data-server
+	url = git@github.com:sync-for-science/discovery-data-server.git
+[submodule "discovery-fhir-data"]
+	path = discovery-fhir-data
+	url = git@github.com:sync-for-science/discovery-FHIR-data.git
