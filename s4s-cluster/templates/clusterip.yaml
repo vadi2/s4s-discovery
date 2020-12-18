@@ -1,0 +1,36 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-service
+spec:
+  type: ClusterIP
+  selector:
+    app: nginx
+  ports:
+    - name: web-ui-production
+      protocol: TCP
+      port: 80
+      targetPort: 80
+    - name: web-ui-development
+      protocol: TCP
+      port: 3000
+      targetPort: 3000
+    - name: procure-wip
+      protocol: TCP
+      port: 4000
+      targetPort: 4000
+    - name: data-server-development
+      protocol: TCP
+      port: 8081
+      targetPort: 8081
+    - name: dstu2
+      protocol: TCP
+      port: 9002
+      targetPort: 9002
+    - name: dstu3
+      protocol: TCP
+      port: 9007
+      targetPort: 9007
+
+
+
