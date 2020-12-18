@@ -9,7 +9,7 @@ metadata:
     io.kompose.service: fhir-data-dstu2
   name: fhir-data-dstu2
 spec:
-  type: LoadBalancer
+  type: ClusterIP
   ports:
     - name: http
       port: 9002
